@@ -10,7 +10,6 @@ import org.mozilla.javascript.ast.AstRoot;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.net.CookieManager;
 import java.net.HttpCookie;

@@ -27,7 +27,7 @@ public interface Evaluator
 		return (str) ->
 		{
 			var match = pattern.matcher(str);
-			if (!match.matches()) return ParseResult.failed(str);
+			if (!match.lookingAt()) return ParseResult.failed(str);
 
 			var result = match.toMatchResult();
 			str = new StringBuilder(str).delete(result.start(), result.end()).toString();
@@ -35,13 +35,14 @@ public interface Evaluator
 		};
 	}
 
+	interface ParsableEvaluator extends Evaluator {}
 
 	// NodeType
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
-	class ByNodeType implements Evaluator
+	class ByNodeType implements ParsableEvaluator
 	{
 		static Pattern pattern = Pattern.compile("^([a-zA-Z_$][0-9a-zA-Z_$]*)");
-		static EvaluatorParser parser = defaultMatch(pattern, match -> new ByNodeType(match.group(0)));
+		static EvaluatorParser parser = defaultMatch(pattern, match -> new ByNodeType(match.group(1)));
 
 		String type;
 
@@ -51,10 +52,10 @@ public interface Evaluator
 
 	// #Name
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
-	class ByName implements Evaluator
+	class ByName implements ParsableEvaluator
 	{
 		static Pattern pattern = Pattern.compile("^#([a-zA-Z_$][0-9a-zA-Z_$]*)");
-		static EvaluatorParser parser = defaultMatch(pattern, match -> new ByNodeType(match.group(0)));
+		static EvaluatorParser parser = defaultMatch(pattern, match -> new ByName(match.group(1)));
 
 		String name;
 

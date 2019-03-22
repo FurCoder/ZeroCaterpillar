@@ -7,7 +7,7 @@ import org.mozilla.javascript.ast.AstNode;
 public interface StructuralEvaluator extends Evaluator
 {
 	@AllArgsConstructor
-	class ImmediateParent implements Evaluator
+	class ImmediateParent implements StructuralEvaluator
 	{
 		Evaluator evaluator;
 
@@ -20,7 +20,7 @@ public interface StructuralEvaluator extends Evaluator
 	}
 
 	@AllArgsConstructor
-	class Parent implements Evaluator
+	class Parent implements StructuralEvaluator
 	{
 		Evaluator evaluator;
 
