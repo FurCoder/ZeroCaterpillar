@@ -13,6 +13,10 @@ public class AstQuery extends CombiningEvaluator.Or
 	public Set<AstNode> select(AstNode node)
 	{
 		var nodes = new HashSet<AstNode>();
+		node.visit(n -> {
+			if (matches(n)) nodes.add(n);
+			return true;
+		});
 		return nodes;
 	}
 }
