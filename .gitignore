@@ -28,3 +28,6 @@ target/
 # IDEA
 .idea/
 *.iml
+
+#ZeroCaterpillar
+pixiv_PHPSESSID
