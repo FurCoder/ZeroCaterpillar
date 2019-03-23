@@ -49,7 +49,7 @@ public class QueryParser
 				.collect(Collectors.toUnmodifiableList());
 	}
 
-	Pattern pattern = Pattern.compile("([ >]*)([\\S]+)");
+	Pattern pattern = Pattern.compile("([ >]*)([^\\s>]+)");
 	AstQuery compile(String queryStr)
 	{
 		AstQuery query = new AstQuery();
