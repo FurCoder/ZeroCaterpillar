@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class CaterpillarTask extends Task
+public abstract class Job extends Task
 {
 	@Getter @Setter
 	boolean enabled;
