@@ -44,7 +44,7 @@ public class QueryParser
 
 		boolean isSuccess()			{ return evaluator != null; }
 
-		static ParseResult success(String next, Evaluator eval)	{ return new ParseResult(next, eval); }
+		static ParseResult success(String next, Evaluator eval)		{ return new ParseResult(next, eval); }
 		static ParseResult failed(String next)						{ return new ParseResult(next, null); }
 	}
 
@@ -62,7 +62,7 @@ public class QueryParser
 					var priorityB = b.getAnnotation(Evaluator.Priority.class);
 					return (priorityB == null ?  0 : priorityB.value()) - (priorityA == null ?  0 : priorityA.value());
 				})
-				.map(e -> SneakyThrows.block(() -> (EvaluatorParser) e.getDeclaredField("parser").get(null)))
+				.map(e -> SneakyThrows.supplier(() -> (EvaluatorParser) e.getDeclaredField("parser").get(null)))
 				.collect(Collectors.toUnmodifiableList());
 	}
 

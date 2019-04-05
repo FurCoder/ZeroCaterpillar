@@ -24,13 +24,30 @@ import java.util.concurrent.Callable;
 @UtilityClass
 public class SneakyThrows
 {
-	public <T> T block(Callable<T> s)
+	public interface Action
+	{
+		void call() throws Throwable;
+	}
+
+	public void action(Action f)
 	{
 		try
 		{
-			return s.call();
+			f.call();
 		}
-		catch (Exception e)
+		catch (Throwable e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public <R> R supplier(Callable<R> f)
+	{
+		try
+		{
+			return f.call();
+		}
+		catch (Throwable e)
 		{
 			throw new RuntimeException(e);
 		}
