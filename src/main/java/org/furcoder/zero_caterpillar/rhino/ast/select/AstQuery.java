@@ -21,10 +21,14 @@ import org.mozilla.javascript.ast.AstNode;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class AstQuery extends CombiningEvaluator.Or
 {
 	public static Set<AstNode> select(AstNode node, String query)	{ return QueryParser.compile(query).select(node); }
+	public static void select(AstNode node, String query, Predicate<AstNode> visitor)	{ QueryParser.compile(query).select(node, visitor); }
+
+	public static AstNode selectAny(AstNode node, String query)		{ return QueryParser.compile(query).selectAny(node); }
 
 
 	public Set<AstNode> select(AstNode node)
@@ -35,5 +39,24 @@ public class AstQuery extends CombiningEvaluator.Or
 			return true;
 		});
 		return nodes;
+	}
+
+	public void select(AstNode node, Predicate<AstNode> visitor)
+	{
+		node.visit(n -> {
+			if (matches(n)) return visitor.test(n);
+			return true;
+		});
+	}
+
+	public AstNode selectAny(AstNode node)
+	{
+		var nodes = new AstNode[1];
+		node.visit(n -> {
+			if (!matches(n)) return true;
+			nodes[0] = n;
+			return false;
+		});
+		return nodes[0];
 	}
 }
