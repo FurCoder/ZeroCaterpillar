@@ -26,10 +26,30 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class Job extends Task
+public abstract class Job
 {
+	public enum Status
+	{
+		NONE,
+		PENDING,
+		RUNNING,
+		FAILED,
+		DONE
+	}
+
+
+	@Getter
+	final UUID id = UUID.randomUUID();
+
+	@Getter @Setter
+	String name;
+
+	@Getter @Setter
+	int priority = 0;
+
 	@Getter @Setter
 	boolean enabled;
 
@@ -42,11 +62,13 @@ public abstract class Job extends Task
 	@Getter
 	transient Status status = Status.NONE;
 
-	@Getter
-	transient TemporalAmount runningTime;
+	transient final Set<ImmediateTask> tasks = new HashSet<>();
 
 	@Getter
-	transient final Set<ImmediateTask> tasks = new HashSet<>();
+	transient JobExecutor executor;
+
+	@Getter
+	transient TemporalAmount runningTime;
 
 
 	public float completionRate()
@@ -59,12 +81,39 @@ public abstract class Job extends Task
 		return (scheduleTimeProvider == null) ? null : scheduleTimeProvider.nextTime(lastUpdate);
 	}
 
-
-	enum Status
+	public void updateStatus()
 	{
-		NONE,
-		PENDING,
-		RUNNING,
-		DONE
+		if (!enabled) return;
+		if (status == Status.NONE || status == Status.FAILED || status == Status.DONE)
+		{
+			if (ZonedDateTime.now().isAfter(scheduledTime()))
+			{
+				status = Status.PENDING;
+			}
+		}
+	}
+
+	protected void addTask(ImmediateTask task)
+	{
+		tasks.add(task);
+		if (executor != null) executor.submitTask(task);
+	}
+
+	void begin(JobExecutor executor_)
+	{
+		assert(status == Status.PENDING);
+
+		status = Status.RUNNING;
+		executor = executor_;
+
+		for (var task : tasks) executor.submitTask(task);
+	}
+
+	void end(boolean success)
+	{
+		assert(status == Status.RUNNING);
+
+		status = success ? Status.DONE : Status.FAILED;
+		executor = null;
 	}
 }

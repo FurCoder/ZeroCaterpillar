@@ -19,30 +19,39 @@ package org.furcoder.zero_caterpillar.task;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class ImmediateTask extends Task implements Comparable<ImmediateTask>
+public abstract class ImmediateTask extends TaskSequence implements Comparable<ImmediateTask>
 {
 	static final AtomicLong counter = new AtomicLong();
 
 
-	@Getter
-	long immediateTaskId = counter.getAndIncrement();
+	public final long id = counter.getAndIncrement();
+
+	public final int priority;
 
 
-	@Override
-	public abstract float completionRate();
+	protected ImmediateTask()
+	{
+		this(0);
+	}
+
+	protected ImmediateTask(int priority)
+	{
+		this.priority = priority;
+	}
 
 	@Override
 	public int compareTo(ImmediateTask t)
 	{
-		if (getPriority() != t.getPriority()) return getPriority() - t.getPriority();
+		if (priority != t.priority) return priority - t.priority;
 
-		if (immediateTaskId > t.immediateTaskId) return -1;
-		if (immediateTaskId < t.immediateTaskId) return 1;
+		if (id > t.id) return -1;
+		if (id < t.id) return 1;
 		return 0;
 	}
 }

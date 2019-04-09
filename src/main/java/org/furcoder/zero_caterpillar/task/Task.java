@@ -17,32 +17,43 @@
 
 package org.furcoder.zero_caterpillar.task;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
+import java.util.function.Supplier;
 
-import java.util.UUID;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public abstract class Task
+
+public interface Task extends Runnable
 {
-	@Getter
-	final UUID id = UUID.randomUUID();
-
-	@Getter @Setter
-	String name;
-
-	@Getter @Setter
-	int priority = 0;
-
-
-	protected Task(String name)
+	interface Cancelable extends Task
 	{
-		this.name = name;
+		void cancel();
 	}
 
-	public abstract float completionRate();
+
+	float completionRate();
+
+
+	static Task create(Runnable run)
+	{
+		return new Task() {
+			@Override public float completionRate()	{ return Float.NaN; }
+			@Override public void run()				{ run.run(); }
+		};
+	}
+
+	static Task create(Supplier<Float> completionRate, Runnable run)
+	{
+		return new Task() {
+			@Override public float completionRate()	{ return completionRate.get(); }
+			@Override public void run()				{ run.run(); }
+		};
+	}
+
+	static Cancelable create(Supplier<Float> completionRate, Runnable cancel, Runnable run)
+	{
+		return new Cancelable () {
+			@Override public float completionRate()	{ return completionRate.get(); }
+			@Override public void cancel()			{ cancel.run(); }
+			@Override public void run()				{ run.run(); }
+		};
+	}
 }
