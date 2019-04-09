@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.furcoder.zero_caterpillar.jsoup.retrofit2;
+package org.furcoder.zero_caterpillar.retrofit2.jsoup;
 
 import okhttp3.ResponseBody;
 import org.jsoup.Jsoup;

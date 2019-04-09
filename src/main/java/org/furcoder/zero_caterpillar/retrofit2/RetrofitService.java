@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.furcoder.zero_caterpillar;
+package org.furcoder.zero_caterpillar.retrofit2;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
-import org.furcoder.zero_caterpillar.jsoup.retrofit2.JsoupConverterFactory;
+import org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
 import org.furcoder.zero_caterpillar.service.ServiceBase;
 import retrofit2.Retrofit;

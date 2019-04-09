@@ -26,7 +26,7 @@ import retrofit2.http.Query;
 
 import java.util.Map;
 
-import static org.furcoder.zero_caterpillar.jsoup.retrofit2.JsoupConverterFactory.JsoupElement;
+import static org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory.JsoupElement;
 
 public interface PixivWebAPI
 {
