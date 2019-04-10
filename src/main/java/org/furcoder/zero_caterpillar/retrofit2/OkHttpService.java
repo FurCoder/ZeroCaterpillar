@@ -35,6 +35,16 @@ public class OkHttpService extends ServiceBase
 
 		httpClient = new OkHttpClient.Builder()
 				.cookieJar(new JavaNetCookieJar(cookieManager))
+				// ProgressCallback
+				.addNetworkInterceptor(chain -> {
+					var response = chain.proceed(chain.request());
+					var listener = chain.request().tag(ProgressCallback.class);
+					if (listener == null) return response;
+
+					return response.newBuilder()
+							.body(new ProgressResponseBody(response.body(), listener))
+							.build();
+				})
 				.build();
 	}
 
