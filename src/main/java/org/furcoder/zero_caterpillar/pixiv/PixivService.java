@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.furcoder.zero_caterpillar.CaterpillarService;
+import org.furcoder.zero_caterpillar.retrofit2.OkHttpService;
 import org.furcoder.zero_caterpillar.retrofit2.RetrofitService;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
 import org.furcoder.zero_caterpillar.service.ServiceBase;
@@ -32,12 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-@ServiceAnnotation.Bind(value = PixivService.Config.class, type = RetrofitService.Config.class)
+@ServiceAnnotation.Bind(value = PixivService.Config.class, type = { OkHttpService.Config.class, RetrofitService.Config.class })
 @ServiceAnnotation.Bind(RetrofitService.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PixivService extends CaterpillarService<PixivJob>
 {
-	public static class Config extends ServiceBase implements RetrofitService.Config
+	public static class Config extends ServiceBase implements OkHttpService.Config, RetrofitService.Config
 	{
 		@Override public String baseUrl()	{ return PixivWebAPI.API_URL; }
 		@Override public Consumer<CookieManager> cookieManagerHandler()
@@ -57,7 +58,7 @@ public class PixivService extends CaterpillarService<PixivJob>
 	@Getter(AccessLevel.PACKAGE)
 	PixivWebService webService;
 
-	
+
 	@Override
 	public void Init()
 	{

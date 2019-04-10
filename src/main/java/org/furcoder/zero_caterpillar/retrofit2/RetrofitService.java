@@ -20,7 +20,6 @@ package org.furcoder.zero_caterpillar.retrofit2;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
@@ -28,9 +27,7 @@ import org.furcoder.zero_caterpillar.service.ServiceBase;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.net.CookieManager;
-import java.util.function.Consumer;
-
+@ServiceAnnotation.DependsOn(OkHttpClient.class)
 @ServiceAnnotation.DependsOn(RetrofitService.Config.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RetrofitService extends ServiceBase
@@ -38,11 +35,8 @@ public class RetrofitService extends ServiceBase
 	public interface Config
 	{
 		String baseUrl();
-		default Consumer<CookieManager> cookieManagerHandler()	{ return null; }
 	}
 
-
-	OkHttpClient httpClient;
 
 	@Getter
 	Retrofit retrofit;
@@ -52,16 +46,9 @@ public class RetrofitService extends ServiceBase
 	public void Init()
 	{
 		var config = service(Config.class);
-
-		CookieManager cookieManager = new CookieManager();
-		if (config.cookieManagerHandler() != null) config.cookieManagerHandler().accept(cookieManager);
-
-		httpClient = new OkHttpClient.Builder()
-				.cookieJar(new JavaNetCookieJar(cookieManager))
-				.build();
-
+		var okHttpService = service(OkHttpService.class);
 		retrofit = new Retrofit.Builder()
-				.client(httpClient)
+				.client(okHttpService.getHttpClient())
 				.baseUrl(config.baseUrl())
 				.addConverterFactory(new JsoupConverterFactory())
 				.addConverterFactory(GsonConverterFactory.create())

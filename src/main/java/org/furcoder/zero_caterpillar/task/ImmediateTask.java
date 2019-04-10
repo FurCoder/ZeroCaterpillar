@@ -18,8 +18,6 @@
 package org.furcoder.zero_caterpillar.task;
 
 import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.concurrent.atomic.AtomicLong;
