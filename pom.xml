@@ -86,6 +86,13 @@
             <version>2.9.8</version>
             <type>bundle</type>
         </dependency>
+
+        <dependency>
+            <groupId>org.snakeyaml</groupId>
+            <artifactId>snakeyaml-engine</artifactId>
+            <version>1.0</version>
+            <type>bundle</type>
+        </dependency>
     </dependencies>
 
     <build>
