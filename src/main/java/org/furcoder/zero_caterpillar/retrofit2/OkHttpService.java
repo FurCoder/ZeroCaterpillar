@@ -70,4 +70,9 @@ public class OkHttpService extends ServiceBase
 	{
 
 	}
+
+	public DownloadRequest.Builder downloadRequest()
+	{
+		return DownloadRequest.builder().service(this);
+	}
 }
