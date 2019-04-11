@@ -19,11 +19,13 @@ package org.furcoder.zero_caterpillar.pixiv;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory.JsoupElement;
@@ -33,32 +35,64 @@ public interface PixivWebAPI
 	String API_URL = "https://www.pixiv.net";
 
 
-	@AllArgsConstructor(access = AccessLevel.PUBLIC)
+	@AllArgsConstructor
+	@FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
 	class ProfileBody
 	{
-		public final Map<Integer, Object> illusts;
-		public final Map<Integer, Object> manga;
-		public final Map<Integer, Object> novels;
-		public final Map<Integer, Object> mangaSeries;
-		public final Map<Integer, Object> novelSeries;
+		Map<Integer, Object> illusts;
+		Map<Integer, Object> manga;
+		Map<Integer, Object> novels;
+		Map<Integer, Object> mangaSeries;
+		Map<Integer, Object> novelSeries;
 	}
 
-	@AllArgsConstructor(access = AccessLevel.PUBLIC)
+	@AllArgsConstructor
+	@FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
 	class Profile
 	{
-		public final String error;
-		public final String message;
-		public final ProfileBody body;
+		String error;
+		String message;
+		ProfileBody body;
 	}
 
-	@GET("/ajax/user/{memberId}/profile/all")
+	@GET("/ajax/user/{member_id}/profile/all")
 	Call<Profile> user_profile_all(
-			@Path("memberId") int memberId
+			@Path("member_id") int memberId
 	);
+
 
 	@GET("/member_illust.php?mode=medium")
 	@JsoupElement("head > script:not([src])")
 	Call<String[]> member_illust_inline_scripts(
 			@Query("illust_id") int illustId
+	);
+
+
+	@AllArgsConstructor
+	@FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
+	class IllustPageBodyUrls
+	{
+		String original;
+	}
+
+	@AllArgsConstructor
+	@FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
+	class IllustPageBody
+	{
+		int height;
+		int width;
+		IllustPageBodyUrls urls;
+	}
+
+	@AllArgsConstructor
+	@FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
+	class IllustPage
+	{
+		List<IllustPageBody> body;
+	}
+
+	@GET("/ajax/illust/{illust_id}/pages")
+	Call<IllustPage> ajax_illust_pages(
+			@Path("illust_id") int illustId
 	);
 }

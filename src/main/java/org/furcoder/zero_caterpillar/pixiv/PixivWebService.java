@@ -32,7 +32,9 @@ import org.mozilla.javascript.ast.ObjectProperty;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PixivWebService
@@ -49,7 +51,9 @@ public class PixivWebService
 		int id;
 		String title;
 		String comment;
-		String url;
+
+		int pages;
+		List<String> urls;
 
 
 		@SneakyThrows
@@ -62,7 +66,8 @@ public class PixivWebService
 			illust.id = illustId;
 			illust.title = illustObj.path("illustTitle").asText();
 			illust.comment = illustObj.path("illustComment").asText();
-			illust.url = illustObj.path("urls").path("original").asText();
+			illust.pages = illustObj.path("userIllusts").path(Integer.toString(illustId)).path("pageCount").asInt(1);
+			illust.urls = List.of(illustObj.path("urls").path("original").asText());
 			return illust;
 		}
 
@@ -70,6 +75,11 @@ public class PixivWebService
 		public String toString()
 		{
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+		}
+
+		public String referer()
+		{
+			return "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=" + id;
 		}
 	}
 
@@ -82,54 +92,56 @@ public class PixivWebService
 		api = retrofit.create(PixivWebAPI.class);
 	}
 
-	private PixivWebAPI.ProfileBody getProfile(int memberId)
+	private PixivWebAPI.ProfileBody getProfile(int memberId) throws IOException
 	{
-		try
-		{
-			var call = api.user_profile_all(315442);
-			var response = call.execute();
+		var call = api.user_profile_all(memberId);
+		var response = call.execute();
 
-			if (!response.isSuccessful()) return null;
-			return response.body().body;
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		if (!response.isSuccessful()) return null;
+		return response.body().body;
 	}
 
-	public Set<Integer> getIllustIds(int memberId)
+	@SneakyThrows
+	public List<Integer> getIllustIds(int memberId)
 	{
 		var profile = getProfile(memberId);
 		if (profile == null) return null;
-		return profile.illusts.keySet();
+
+		List<Integer> list = new ArrayList<>(profile.illusts.size() + profile.manga.size());
+		list.addAll(profile.illusts.keySet());
+		list.addAll(profile.manga.keySet());
+		return list;
 	}
 
+	@SneakyThrows
 	public Illust getIllust(int illustId)
 	{
-		try
-		{
-			var call = api.member_illust_inline_scripts(illustId);
-			var response = call.execute();
-			if (!response.isSuccessful()) return null;
+		var call = api.member_illust_inline_scripts(illustId);
+		var response = call.execute();
+		if (!response.isSuccessful()) return null;
 
-			ObjectProperty preload = null;
-			for (String script : response.body())
-			{
-				AstRoot astRoot = new Parser().parse(script, "", 0);
-				var node = AstQuery.selectAny(astRoot, "VariableInitializer#globalInitData ObjectProperty#preload");
-				if (node != null) preload = (ObjectProperty) node;
-			}
-
-			if (preload == null) return null;
-			var jsonStr = StringEscapeUtils.hexEscapeToUnicodeEscape(preload.getRight().toSource());
-			return Illust.parsePreload(jsonStr, illustId);
-		}
-		catch (IOException e)
+		ObjectProperty preload = null;
+		for (String script : response.body())
 		{
-			e.printStackTrace();
-			return null;
+			AstRoot astRoot = new Parser().parse(script, "", 0);
+			var node = AstQuery.selectAny(astRoot, "VariableInitializer#globalInitData ObjectProperty#preload");
+			if (node != null) preload = (ObjectProperty) node;
 		}
+
+		if (preload == null) return null;
+		var jsonStr = StringEscapeUtils.hexEscapeToUnicodeEscape(preload.getRight().toSource());
+
+		var illust = Illust.parsePreload(jsonStr, illustId);
+		if (illust.pages > 1) illust.urls = getIllustUrls(illustId);
+		return illust;
+	}
+
+	@SneakyThrows
+	public List<String> getIllustUrls(int illustId)
+	{
+		var call = api.ajax_illust_pages(illustId);
+		var response = call.execute();
+		if (!response.isSuccessful()) return null;
+		return response.body().body.stream().map(body -> body.urls.original).collect(Collectors.toList());
 	}
 }
