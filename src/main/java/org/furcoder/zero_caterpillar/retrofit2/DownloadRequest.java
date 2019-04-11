@@ -1,6 +1,7 @@
 package org.furcoder.zero_caterpillar.retrofit2;
 
 import lombok.Builder;
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -50,13 +51,15 @@ public class DownloadRequest
 
 	public byte[] download() throws IOException
 	{
-		return executeRequest().body().bytes();
+		@Cleanup var response = executeRequest();
+		return response.body().bytes();
 	}
 
 	public void download(String filename) throws IOException
 	{
+		@Cleanup var response = executeRequest();
 		var writer = new BufferedAsyncFileWriter(Path.of(filename), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-		writer.write(executeRequest().body().byteStream());
+		writer.write(response.body().byteStream());
 		writer.close();
 	}
 
