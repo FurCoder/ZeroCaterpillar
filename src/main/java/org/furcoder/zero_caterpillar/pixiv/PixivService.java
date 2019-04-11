@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 @ServiceAnnotation.Bind(value = PixivService.Config.class, type = { OkHttpService.Config.class, RetrofitService.Config.class })
+@ServiceAnnotation.Bind(OkHttpService.class)
 @ServiceAnnotation.Bind(RetrofitService.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PixivService extends CaterpillarService<PixivJob>

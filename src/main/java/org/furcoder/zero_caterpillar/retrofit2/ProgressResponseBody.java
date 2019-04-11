@@ -45,7 +45,7 @@ public class ProgressResponseBody extends ResponseBody
 			{
 				long bytesRead = super.read(sink, byteCount);
 				totalBytesRead += bytesRead == -1 ? 0 : bytesRead;
-				progressListener.onUpdate(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+				if (bytesRead != 0) progressListener.onUpdate(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
 				return bytesRead;
 			}
 		});

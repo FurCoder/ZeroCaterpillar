@@ -20,14 +20,13 @@ package org.furcoder.zero_caterpillar.retrofit2;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import okhttp3.OkHttpClient;
 import org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
 import org.furcoder.zero_caterpillar.service.ServiceBase;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@ServiceAnnotation.DependsOn(OkHttpClient.class)
+@ServiceAnnotation.DependsOn(OkHttpService.class)
 @ServiceAnnotation.DependsOn(RetrofitService.Config.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RetrofitService extends ServiceBase
