@@ -17,13 +17,13 @@
 
 package org.furcoder.zero_caterpillar.pixiv;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.furcoder.zero_caterpillar.jsonpath.JsonPathProperty;
+import org.furcoder.zero_caterpillar.jsonpath.Unmarshaller;
 import org.furcoder.zero_caterpillar.rhino.ast.select.AstQuery;
 import org.furcoder.zero_caterpillar.util.StringEscapeUtils;
 import org.mozilla.javascript.Parser;
@@ -39,35 +39,29 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PixivWebService
 {
-	static ObjectMapper objectMapper = new ObjectMapper();
-	{
-		objectMapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
-		objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
-	}
-
-
 	static class Illust
 	{
 		int id;
+
+		@JsonPathProperty("illustTitle")
 		String title;
+
+		@JsonPathProperty("illustComment")
 		String comment;
 
-		int pages;
+		@JsonPathProperty("userIllusts.{0}.pageCount")
+		int pages = 1;
+
+		@JsonPathProperty("urls.original")
+		void setUrl(String url) { urls = List.of(url); }
 		List<String> urls;
 
 
 		@SneakyThrows
 		static Illust parsePreload(String jsonStr, int illustId)
 		{
-			var preload = objectMapper.readTree(jsonStr);
-			var illustObj = preload.path("illust").path(Integer.toString(illustId));
-
-			Illust illust = new Illust();
+			var illust = Unmarshaller.unmarshal(jsonStr, "$.illust.{0}", Illust.class, Integer.toString(illustId));
 			illust.id = illustId;
-			illust.title = illustObj.path("illustTitle").asText();
-			illust.comment = illustObj.path("illustComment").asText();
-			illust.pages = illustObj.path("userIllusts").path(Integer.toString(illustId)).path("pageCount").asInt(1);
-			illust.urls = List.of(illustObj.path("urls").path("original").asText());
 			return illust;
 		}
 
@@ -76,10 +70,10 @@ public class PixivWebService
 		{
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 		}
-
+		
 		public String referer()
 		{
-			return "https://www.pixiv.net/member_illust.php?mode=medium&illust_id=" + id;
+			return PixivWebAPI.API_URL + "/member_illust.php?mode=medium&illust_id=" + id;
 		}
 	}
 
