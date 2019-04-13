@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 
 @UtilityClass
-public class Unmarshaller
+public class JsonUnmarshaller
 {
 	static final ObjectMapper objectMapper = new ObjectMapper();
 	static final ParseContext parseContext;

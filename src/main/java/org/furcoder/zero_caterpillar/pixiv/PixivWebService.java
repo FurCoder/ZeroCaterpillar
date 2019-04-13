@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.furcoder.zero_caterpillar.jsonpath.JsonPathProperty;
-import org.furcoder.zero_caterpillar.jsonpath.Unmarshaller;
+import org.furcoder.zero_caterpillar.jsonpath.JsonUnmarshaller;
 import org.furcoder.zero_caterpillar.rhino.ast.select.AstQuery;
 import org.furcoder.zero_caterpillar.util.StringEscapeUtils;
 import org.mozilla.javascript.Parser;
@@ -59,7 +59,7 @@ public class PixivWebService
 
 		static Illust parsePreload(String jsonStr, int illustId)
 		{
-			var illust = Unmarshaller.unmarshal(jsonStr, "$.illust.{0}", Illust.class, Integer.toString(illustId));
+			var illust = JsonUnmarshaller.unmarshal(jsonStr, "$.illust.{0}", Illust.class, Integer.toString(illustId));
 			illust.id = illustId;
 			return illust;
 		}
