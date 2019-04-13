@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import org.furcoder.zero_caterpillar.rhino.ast.select.StructuralEvaluator.ImmediateParent;
 import org.furcoder.zero_caterpillar.rhino.ast.select.StructuralEvaluator.Parent;
-import org.furcoder.zero_caterpillar.util.SneakyThrows;
+import org.furcoder.zero_caterpillar.util.SneakyThrowUtils;
 import org.reflections.Reflections;
 
 import java.util.List;
@@ -62,7 +62,7 @@ public class QueryParser
 					var priorityB = b.getAnnotation(Evaluator.Priority.class);
 					return (priorityB == null ?  0 : priorityB.value()) - (priorityA == null ?  0 : priorityA.value());
 				})
-				.map(e -> SneakyThrows.supplier(() -> (EvaluatorParser) e.getDeclaredField("parser").get(null)))
+				.map(e -> SneakyThrowUtils.wrap(() -> (EvaluatorParser) e.getDeclaredField("parser").get(null)))
 				.collect(Collectors.toUnmodifiableList());
 	}
 

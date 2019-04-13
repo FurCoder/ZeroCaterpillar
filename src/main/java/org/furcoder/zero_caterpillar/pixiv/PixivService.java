@@ -25,7 +25,7 @@ import org.furcoder.zero_caterpillar.retrofit2.OkHttpService;
 import org.furcoder.zero_caterpillar.retrofit2.RetrofitService;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
 import org.furcoder.zero_caterpillar.service.ServiceBase;
-import org.furcoder.zero_caterpillar.util.SneakyThrows;
+import org.furcoder.zero_caterpillar.util.SneakyThrowUtils;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -44,7 +44,7 @@ public class PixivService extends CaterpillarService<PixivJob>
 		@Override public String baseUrl()	{ return PixivWebAPI.API_URL; }
 		@Override public Consumer<CookieManager> cookieManagerHandler()
 		{
-			return (m) -> SneakyThrows.action(() -> {
+			return (m) -> SneakyThrowUtils.wrap(() -> {
 				var pixivSessionCookie = new HttpCookie("PHPSESSID", Files.readString(Path.of("pixiv_PHPSESSID")));
 				pixivSessionCookie.setDomain(".pixiv.net");
 				pixivSessionCookie.setPath("/");

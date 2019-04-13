@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import org.furcoder.zero_caterpillar.retrofit2.OkHttpService;
 import org.furcoder.zero_caterpillar.task.ImmediateTask;
 import org.furcoder.zero_caterpillar.task.Task;
-import org.furcoder.zero_caterpillar.util.SneakyThrows;
+import org.furcoder.zero_caterpillar.util.SneakyThrowUtils;
 
 @AllArgsConstructor
 public class IllustDownloadTask extends ImmediateTask
@@ -45,7 +45,7 @@ public class IllustDownloadTask extends ImmediateTask
 						.build();
 
 				addTask(Task.create(() -> downloadRequest.completionRate(), () -> {
-					SneakyThrows.action(() -> downloadRequest.download(filename));
+					SneakyThrowUtils.wrap(() -> downloadRequest.download(filename));
 				}));
 			}
 		}));

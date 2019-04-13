@@ -22,14 +22,14 @@ import lombok.experimental.UtilityClass;
 import java.util.concurrent.Callable;
 
 @UtilityClass
-public class SneakyThrows
+public class SneakyThrowUtils
 {
 	public interface Action
 	{
 		void call() throws Throwable;
 	}
 
-	public void action(Action f)
+	public void wrap(Action f)
 	{
 		try
 		{
@@ -41,7 +41,7 @@ public class SneakyThrows
 		}
 	}
 
-	public <R> R supplier(Callable<R> f)
+	public <R> R wrap(Callable<R> f)
 	{
 		try
 		{
