@@ -20,6 +20,7 @@ package org.furcoder.zero_caterpillar.pixiv;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupElement;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -27,8 +28,6 @@ import retrofit2.http.Query;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.furcoder.zero_caterpillar.retrofit2.jsoup.JsoupConverterFactory.JsoupElement;
 
 public interface PixivWebAPI
 {

@@ -27,25 +27,11 @@ import retrofit2.Retrofit;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 public class JsoupConverterFactory extends Converter.Factory
 {
-	@Documented
-	@Target(METHOD)
-	@Retention(RUNTIME)
-	public @interface JsoupElement
-	{
-		String	value();
-	}
-
 	@Nullable
 	@Override
 	public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit)
