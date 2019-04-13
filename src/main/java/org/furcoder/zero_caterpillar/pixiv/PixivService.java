@@ -61,14 +61,14 @@ public class PixivService extends CaterpillarService<PixivJob>
 
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		var retrofitService = service(RetrofitService.class);
 		webService = new PixivWebService(retrofitService.getRetrofit());
 	}
 
 	@Override
-	public void Destroy()
+	public void destroy()
 	{
 		webService = null;
 	}

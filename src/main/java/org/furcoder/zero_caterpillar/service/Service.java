@@ -24,6 +24,6 @@ public interface Service
 	<T> T service(Class<T> clazz);
 	Map<Class<?>, Service> services();
 
-	default void Init()		{}
-	default void Destroy()	{}
+	default void init()		{}
+	default void destroy()	{}
 }

@@ -57,7 +57,6 @@ public class PixivWebService
 		List<String> urls;
 
 
-		@SneakyThrows
 		static Illust parsePreload(String jsonStr, int illustId)
 		{
 			var illust = Unmarshaller.unmarshal(jsonStr, "$.illust.{0}", Illust.class, Integer.toString(illustId));

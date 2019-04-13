@@ -74,7 +74,7 @@ public class ServiceUtils
 
 				if (!success) return false;
 
-				service.Init();
+				service.init();
 				initializingServices.put(service, Boolean.TRUE);
 			}
 			return true;
@@ -85,7 +85,7 @@ public class ServiceUtils
 			if (!initDeps[0].apply(entry.getValue())) return null;
 		}
 
-		instance.Init();
+		instance.init();
 		return instance;
 	}
 

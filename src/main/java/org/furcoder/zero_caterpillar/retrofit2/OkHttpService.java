@@ -43,7 +43,7 @@ public class OkHttpService extends ServiceBase
 
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		var config = service(Config.class);
 
@@ -66,7 +66,7 @@ public class OkHttpService extends ServiceBase
 	}
 
 	@Override
-	public void Destroy()
+	public void destroy()
 	{
 
 	}

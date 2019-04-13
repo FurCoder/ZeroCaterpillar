@@ -42,7 +42,7 @@ public class RetrofitService extends ServiceBase
 
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		var config = service(Config.class);
 		var okHttpService = service(OkHttpService.class);
@@ -55,7 +55,7 @@ public class RetrofitService extends ServiceBase
 	}
 
 	@Override
-	public void Destroy()
+	public void destroy()
 	{
 
 	}

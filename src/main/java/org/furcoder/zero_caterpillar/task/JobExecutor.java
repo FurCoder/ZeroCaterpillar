@@ -42,7 +42,7 @@ public class JobExecutor extends ServiceBase
 
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		var config = service(Config.class);
 		if (config == null) config = new Config() {};
@@ -51,7 +51,7 @@ public class JobExecutor extends ServiceBase
 	}
 
 	@Override
-	public void Destroy()
+	public void destroy()
 	{
 		executorService.shutdownNow();
 		executorService = null;
