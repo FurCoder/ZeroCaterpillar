@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface JsonPathProperty
 {
-	String value();
+	String value() default "";
 }
