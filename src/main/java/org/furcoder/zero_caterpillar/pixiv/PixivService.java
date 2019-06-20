@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.furcoder.zero_caterpillar.CaterpillarService;
+import org.furcoder.zero_caterpillar.gui.Service;
 import org.furcoder.zero_caterpillar.retrofit2.OkHttpService;
 import org.furcoder.zero_caterpillar.retrofit2.RetrofitService;
 import org.furcoder.zero_caterpillar.service.ServiceAnnotation;
@@ -37,6 +38,7 @@ import java.util.function.Consumer;
 @ServiceAnnotation.Bind(OkHttpService.class)
 @ServiceAnnotation.Bind(RetrofitService.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Service(name = "Pixiv")
 public class PixivService extends CaterpillarService<PixivJob>
 {
 	public static class Config extends ServiceBase implements OkHttpService.Config, RetrofitService.Config
